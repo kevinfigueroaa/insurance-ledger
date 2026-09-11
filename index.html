@@ -1,0 +1,209 @@
+<!--
+DESIGN PLAN (v4 — full reinvention, "Nocturne Bento")
+Brief: unrecognizable from the brass ledger, still reads as expensive. Traded
+the private-bank-vault register for a different world entirely: a dark,
+glassy, gradient-lit modern fintech dashboard — the register put through a
+completely different lens. Same underlying tool, opposite visual grammar.
+
+Color:
+  --bg       #0E0B1A  near-black deep violet — the entire canvas, not a zone
+  --bg-2     #171224  slightly lifted panel tone
+  --glass    rgba(255,255,255,0.045)  translucent card fill
+  --glass-hi rgba(255,255,255,0.08)   hover/active translucent fill
+  --border   rgba(255,255,255,0.10)   hairline on glass
+  --text     #F3EFFD  primary text — soft lavender-white, not pure white
+  --muted    #9891B0  secondary text
+  --accent   #FF6A45  vivid coral — the one warm accent, paired with amber
+  --accent-2 #FFB648  amber — accent's gradient partner
+  --sage     #34D399  issued / settled
+  --rust     #FB7185  needs attention
+  --amber    #FBBF61  in progress
+
+Type: Space Grotesk (600/700) for the wordmark, numerals and section titles —
+a geometric display face, doing the opposite branding job the ledger's serif
+did. Inter for every functional surface. Big tabular numerals on the stat
+tiles; this system leads with numbers instead of hiding them in a sidebar.
+
+Layout: no rail at all — a single scrolling canvas. A hero header with a
+gradient-filled wordmark and one clear CTA, a bento row of glass stat tiles
+(one of them, total premium, gets a subtle gradient wash to lead the
+eye), then the working list as full-width glass "capsule" rows that expand
+into a nested detail panel. Two soft, blurred gradient blobs sit fixed
+behind the whole canvas for depth — the system's one atmospheric move,
+matching the ledger's one hairline texture in restraint but nothing like it
+in effect.
+
+Principles unchanged from the skill even though the surface is unrecognizable:
+one accent (now coral/amber instead of brass), one atmospheric texture (blobs
+instead of hairlines), one gradient treatment (CTA buttons + the lead stat
+tile), everything else kept quiet and glassy.
+
+Self-check: not cream+terracotta, not flat near-black+single-neon (paired
+warm duotone, not one acid color), not a SaaS card grid (asymmetric bento,
+not uniform cards), no eyebrows/middle-dots/arrow CTAs. Passes, and reads
+nothing like v3.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deal Ledger</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+
+  <div class="shell">
+
+    <div class="top">
+      <div>
+        <h1 class="wordmark">Deal Ledger</h1>
+        <p>A private record of every policy you've placed.</p>
+      </div>
+      <button class="btn" id="toggleFormBtn">+ Log a deal</button>
+    </div>
+
+    <div class="bento">
+      <div class="tile">
+        <div class="label">Deals logged</div>
+        <div class="value" id="statTotal">0</div>
+      </div>
+      <div class="tile">
+        <div class="label">Issued</div>
+        <div class="value" id="statIssued">0</div>
+      </div>
+      <div class="tile lead">
+        <div class="label">Total premium (issued)</div>
+        <div class="value" id="statPremium">$0</div>
+      </div>
+      <div class="tile">
+        <div class="label">Total coverage (issued)</div>
+        <div class="value" id="statCoverage">$0</div>
+      </div>
+      <div class="tile mix-tile">
+        <div class="mix-top">
+          <span class="label">Status mix</span>
+        </div>
+        <div class="mix-bar" id="mixBar"></div>
+        <div class="mix-key">
+          <span><i style="background:var(--sage)"></i>Issued</span>
+          <span><i style="background:var(--amber)"></i>In progress</span>
+          <span><i style="background:var(--rust)"></i>Closed out</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="toolbar">
+      <div class="toolbar-left">
+        <input type="search" id="searchInput" placeholder="Search client or insurer">
+        <select id="statusFilter">
+          <option value="">All statuses</option>
+          <option>Pending</option>
+          <option>Applied</option>
+          <option>Approved</option>
+          <option>Issued</option>
+          <option>Declined</option>
+          <option>Lapsed</option>
+          <option>Cancelled</option>
+        </select>
+      </div>
+      <div class="toolbar-right">
+        <button class="btn-ghost" id="groupToggleBtn">Group by month</button>
+        <button class="btn-ghost" id="exportCsvBtn">Export CSV</button>
+      </div>
+    </div>
+
+    <section class="entry-panel" id="entryPanel">
+      <div class="entry-panel-inner">
+        <h2 id="formTitle">Log a deal</h2>
+        <div class="form-grid">
+          <div class="field span-2">
+            <label for="fClient">Client name</label>
+            <input id="fClient" type="text" placeholder="Jane Doe">
+          </div>
+          <div class="field span-2">
+            <label for="fInsurer">Insurer</label>
+            <input id="fInsurer" type="text" placeholder="Northwestern Mutual">
+          </div>
+          <div class="field">
+            <label for="fPolicyNum">Policy number</label>
+            <input id="fPolicyNum" type="text">
+          </div>
+          <div class="field">
+            <label for="fPolicyType">Policy type</label>
+            <input id="fPolicyType" type="text" placeholder="Term 20yr">
+          </div>
+          <div class="field">
+            <label for="fCoverage">Coverage amount</label>
+            <input id="fCoverage" type="number" min="0" step="1000" placeholder="500000">
+          </div>
+          <div class="field">
+            <label for="fPremium">Annual premium</label>
+            <input id="fPremium" type="number" min="0" step="1" placeholder="1200">
+          </div>
+          <div class="field">
+            <label for="fAppDate">Application date</label>
+            <input id="fAppDate" type="date">
+          </div>
+          <div class="field">
+            <label for="fIssueDate">Issue date</label>
+            <input id="fIssueDate" type="date">
+          </div>
+          <div class="field">
+            <label for="fStatus">Status</label>
+            <select id="fStatus">
+              <option>Pending</option>
+              <option>Applied</option>
+              <option>Approved</option>
+              <option selected>Issued</option>
+              <option>Declined</option>
+              <option>Lapsed</option>
+              <option>Cancelled</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="fFollowUp">Follow-up date</label>
+            <input id="fFollowUp" type="date">
+          </div>
+          <div class="field span-4">
+            <label for="fNotes">Notes</label>
+            <textarea id="fNotes" placeholder="Referred by, renewal reminders, anything worth remembering"></textarea>
+          </div>
+        </div>
+        <div class="form-actions">
+          <span class="save-confirm" id="saveConfirm">Saved · just now</span>
+          <button class="btn-text" id="cancelBtn">Cancel</button>
+          <button class="btn" id="saveBtn">Save deal</button>
+        </div>
+      </div>
+    </section>
+
+    <div id="ledgerWrap">
+      <div id="ledgerBody"></div>
+      <div class="ledger-foot" id="ledgerFoot"></div>
+    </div>
+
+    <div class="empty-state" id="emptyState" style="display:none;">
+      <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="24" cy="24" r="20" stroke="url(#g)" stroke-width="1.6" stroke-dasharray="3 5"/>
+        <circle cx="24" cy="24" r="6" fill="url(#g)" opacity="0.8"/>
+        <defs>
+          <linearGradient id="g" x1="4" y1="4" x2="44" y2="44" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#FF6A45"/>
+            <stop offset="1" stop-color="#FFB648"/>
+          </linearGradient>
+        </defs>
+      </svg>
+      <h3>No deals yet</h3>
+      <p>Log your first deal above to start building your record.</p>
+    </div>
+
+  </div>
+
+<script src="script.js"></script>
+</body>
+</html>
