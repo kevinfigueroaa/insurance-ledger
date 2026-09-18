@@ -303,6 +303,7 @@ function renderSidebar() {
   const totalCoverage = issued.reduce((s, d) => s + (parseFloat(d.coverage) || 0), 0);
 
   $('statTotal').textContent = deals.length;
+  if ($('statTotalInline')) $('statTotalInline').textContent = String(deals.length).padStart(3, '0');
   $('statIssued').textContent = issued.length;
   $('statPremium').textContent = money(totalPremium);
   $('statCoverage').textContent = money(totalCoverage);
