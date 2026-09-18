@@ -148,6 +148,10 @@ function fmtDate(s) {
   return `${m}/${d}/${y}`;
 }
 
+function statusSlug(status) {
+  return (status || '').toLowerCase();
+}
+
 function buildRow(d) {
   const isOpen = expandedDeals.has(d.id);
 
@@ -156,7 +160,16 @@ function buildRow(d) {
 
   const nameRow = document.createElement('div');
   nameRow.className = 'name-row';
-  nameRow.innerHTML = `<span class="chevron">▸</span><span class="client-name">${escapeHtml(d.client)}</span>`;
+  const subline = [d.insurer, d.policyType].filter(Boolean).join(' · ');
+  nameRow.innerHTML = `
+    <span class="chevron">▸</span>
+    <span class="name-main">
+      <span class="client-name">${escapeHtml(d.client)}</span>
+      ${subline ? `<span class="name-sub">${escapeHtml(subline)}</span>` : ''}
+    </span>
+    <span class="status-stamp status-${statusSlug(d.status)}">${escapeHtml(d.status || '—')}</span>
+    <span class="name-figure">${d.premium ? money(d.premium) : '—'}</span>
+  `;
   nameRow.addEventListener('click', () => {
     if (expandedDeals.has(d.id)) expandedDeals.delete(d.id);
     else expandedDeals.add(d.id);
@@ -297,9 +310,9 @@ function renderSidebar() {
   const total = deals.length || 1;
   const mixBar = $('mixBar');
   mixBar.innerHTML = `
-    <span style="width:${(issued.length/total)*100}%; background:var(--sage)"></span>
-    <span style="width:${(inProgress.length/total)*100}%; background:var(--amber)"></span>
-    <span style="width:${(closedOut.length/total)*100}%; background:var(--rust)"></span>
+    <span style="width:${(issued.length/total)*100}%; background:var(--issued)"></span>
+    <span style="width:${(inProgress.length/total)*100}%; background:var(--progress)"></span>
+    <span style="width:${(closedOut.length/total)*100}%; background:var(--attention)"></span>
   `;
 }
 

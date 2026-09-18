@@ -1,47 +1,51 @@
 <!--
-DESIGN PLAN (v4 — full reinvention, "Nocturne Bento")
-Brief: unrecognizable from the brass ledger, still reads as expensive. Traded
-the private-bank-vault register for a different world entirely: a dark,
-glassy, gradient-lit modern fintech dashboard — the register put through a
-completely different lens. Same underlying tool, opposite visual grammar.
+DESIGN PLAN (v5 — "Quiet Ledger")
+Brief: a third, distinct premium direction. v3 was a dark brass vault register;
+v4 was a dark violet glass fintech dashboard. v5 goes light: a paper-toned
+private-client statement — the opposite of both predecessors' dark canvases,
+while reading, if anything, more expensive because of the restraint.
+
+Source: ui-ux-pro-max skill, --design-system query "premium financial ledger
+dashboard light luxury" (style: Liquid Glass, adapted to light mode; palette:
+premium black + bronze/gold on warm stone; type: Cormorant / Montserrat).
 
 Color:
-  --bg       #0E0B1A  near-black deep violet — the entire canvas, not a zone
-  --bg-2     #171224  slightly lifted panel tone
-  --glass    rgba(255,255,255,0.045)  translucent card fill
-  --glass-hi rgba(255,255,255,0.08)   hover/active translucent fill
-  --border   rgba(255,255,255,0.10)   hairline on glass
-  --text     #F3EFFD  primary text — soft lavender-white, not pure white
-  --muted    #9891B0  secondary text
-  --accent   #FF6A45  vivid coral — the one warm accent, paired with amber
-  --accent-2 #FFB648  amber — accent's gradient partner
-  --sage     #34D399  issued / settled
-  --rust     #FB7185  needs attention
-  --amber    #FBBF61  in progress
+  --bg        #FAFAF9  warm stone canvas
+  --paper     #FFFFFF  card/panel surface
+  --ink       #1C1917  primary text, near-black warm charcoal
+  --ink-soft  #44403C  secondary text
+  --muted     #78716C  tertiary / metadata
+  --border    #E2DFDB  hairline
+  --border-hi #CFC9C2  stronger hairline (hover/expanded)
+  --gold      #A16207  the one accent — bronze/gold, CTAs + underlines only
+  --gold-wash rgba(161,98,7,0.08)  faint gold tint for the lead figure + focus
+  --issued    #166534  deep forest green — settled
+  --progress  #92601C  warm ochre — in motion
+  --attention #9F1D1D  oxblood — needs attention / closed out
 
-Type: Space Grotesk (600/700) for the wordmark, numerals and section titles —
-a geometric display face, doing the opposite branding job the ledger's serif
-did. Inter for every functional surface. Big tabular numerals on the stat
-tiles; this system leads with numbers instead of hiding them in a sidebar.
+Type: Cormorant (500/600/700) for the wordmark, big ledger figures and section
+titles — an editorial luxury serif, the opposite branding move from both the
+brass serif-on-dark and the geometric Space Grotesk of v4. Montserrat
+(300–600) for every functional surface, set with wide tracking on labels for
+a statement/letterpress feel.
 
-Layout: no rail at all — a single scrolling canvas. A hero header with a
-gradient-filled wordmark and one clear CTA, a bento row of glass stat tiles
-(one of them, total premium, gets a subtle gradient wash to lead the
-eye), then the working list as full-width glass "capsule" rows that expand
-into a nested detail panel. Two soft, blurred gradient blobs sit fixed
-behind the whole canvas for depth — the system's one atmospheric move,
-matching the ledger's one hairline texture in restraint but nothing like it
-in effect.
+Layout: a single scrolling "statement" — masthead with a hairline gold rule,
+a flat summary strip (numbers separated by vertical hairlines, not boxed
+tiles — a bank-statement pattern, not a bento grid), an understated toolbar,
+a frosted entry card, then a ruled ledger list where each row surfaces
+client + insurer + a small status "stamp" + the yearly figure before you
+ever expand it. A faint paper-grain + vignette sits fixed behind the whole
+canvas — this system's one atmospheric texture, replacing v4's blurred
+color blobs with something dry and tactile instead of glowing.
 
 Principles unchanged from the skill even though the surface is unrecognizable:
-one accent (now coral/amber instead of brass), one atmospheric texture (blobs
-instead of hairlines), one gradient treatment (CTA buttons + the lead stat
-tile), everything else kept quiet and glassy.
+one accent (bronze/gold, not coral/amber or brass), one atmospheric texture
+(paper grain, not blobs or hairline-only), one gradient treatment (the CTA
+button sheen + the lead figure's underline), everything else kept quiet.
 
-Self-check: not cream+terracotta, not flat near-black+single-neon (paired
-warm duotone, not one acid color), not a SaaS card grid (asymmetric bento,
-not uniform cards), no eyebrows/middle-dots/arrow CTAs. Passes, and reads
-nothing like v3.
+Self-check: not dark+neon, not a boxed SaaS card grid, not a re-skin of the
+brass vault (light vs. dark, serif+sans vs. serif+sans-on-dark, statement
+strip vs. bento/rail). Passes, and reads nothing like v3 or v4.
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -50,52 +54,53 @@ nothing like v3.
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Deal Ledger</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,500;0,600;0,700;1,600&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="blob blob-1"></div>
-  <div class="blob blob-2"></div>
+  <div class="paper-texture" aria-hidden="true"></div>
 
   <div class="shell">
 
-    <div class="top">
+    <header class="masthead">
       <div>
+        <p class="eyebrow">Private Client Register</p>
         <h1 class="wordmark">Deal Ledger</h1>
-        <p>A private record of every policy you've placed.</p>
+        <p class="masthead-note">A private record of every policy you've placed.</p>
       </div>
-      <button class="btn" id="toggleFormBtn">+ Log a deal</button>
-    </div>
+      <button class="btn-gold" id="toggleFormBtn">Log a deal</button>
+    </header>
 
-    <div class="bento">
-      <div class="tile">
-        <div class="label">Deals logged</div>
-        <div class="value" id="statTotal">0</div>
-      </div>
-      <div class="tile">
-        <div class="label">Issued</div>
-        <div class="value" id="statIssued">0</div>
-      </div>
-      <div class="tile lead">
-        <div class="label">Total premium (issued)</div>
-        <div class="value" id="statPremium">$0</div>
-      </div>
-      <div class="tile">
-        <div class="label">Total coverage (issued)</div>
-        <div class="value" id="statCoverage">$0</div>
-      </div>
-      <div class="tile mix-tile">
-        <div class="mix-top">
-          <span class="label">Status mix</span>
+    <section class="statement">
+      <div class="statement-row">
+        <div class="statement-item">
+          <span class="s-label">Deals logged</span>
+          <span class="s-value" id="statTotal">0</span>
         </div>
-        <div class="mix-bar" id="mixBar"></div>
-        <div class="mix-key">
-          <span><i style="background:var(--sage)"></i>Issued</span>
-          <span><i style="background:var(--amber)"></i>In progress</span>
-          <span><i style="background:var(--rust)"></i>Closed out</span>
+        <div class="statement-item">
+          <span class="s-label">Issued</span>
+          <span class="s-value" id="statIssued">0</span>
+        </div>
+        <div class="statement-item lead">
+          <span class="s-label">Total premium <em>issued</em></span>
+          <span class="s-value" id="statPremium">$0</span>
+        </div>
+        <div class="statement-item">
+          <span class="s-label">Total coverage <em>issued</em></span>
+          <span class="s-value" id="statCoverage">$0</span>
         </div>
       </div>
-    </div>
+      <div class="statement-mix">
+        <span class="s-label">Status mix</span>
+        <div class="mix-track" id="mixBar"></div>
+        <div class="mix-legend">
+          <span><i style="background:var(--issued)"></i>Issued</span>
+          <span><i style="background:var(--progress)"></i>In progress</span>
+          <span><i style="background:var(--attention)"></i>Closed out</span>
+        </div>
+      </div>
+    </section>
 
     <div class="toolbar">
       <div class="toolbar-left">
@@ -112,8 +117,8 @@ nothing like v3.
         </select>
       </div>
       <div class="toolbar-right">
-        <button class="btn-ghost" id="groupToggleBtn">Group by month</button>
-        <button class="btn-ghost" id="exportCsvBtn">Export CSV</button>
+        <button class="btn-outline" id="groupToggleBtn">Group by month</button>
+        <button class="btn-outline" id="exportCsvBtn">Export CSV</button>
       </div>
     </div>
 
@@ -177,7 +182,7 @@ nothing like v3.
         <div class="form-actions">
           <span class="save-confirm" id="saveConfirm">Saved · just now</span>
           <button class="btn-text" id="cancelBtn">Cancel</button>
-          <button class="btn" id="saveBtn">Save deal</button>
+          <button class="btn-gold" id="saveBtn">Save deal</button>
         </div>
       </div>
     </section>
@@ -188,15 +193,9 @@ nothing like v3.
     </div>
 
     <div class="empty-state" id="emptyState" style="display:none;">
-      <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="24" cy="24" r="20" stroke="url(#g)" stroke-width="1.6" stroke-dasharray="3 5"/>
-        <circle cx="24" cy="24" r="6" fill="url(#g)" opacity="0.8"/>
-        <defs>
-          <linearGradient id="g" x1="4" y1="4" x2="44" y2="44" gradientUnits="userSpaceOnUse">
-            <stop stop-color="#FF6A45"/>
-            <stop offset="1" stop-color="#FFB648"/>
-          </linearGradient>
-        </defs>
+      <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="20" cy="20" r="17" stroke="#A16207" stroke-width="1.4" stroke-dasharray="2.5 4.5"/>
+        <circle cx="20" cy="20" r="5" fill="#A16207" opacity="0.85"/>
       </svg>
       <h3>No deals yet</h3>
       <p>Log your first deal above to start building your record.</p>
